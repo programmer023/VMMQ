@@ -103,6 +103,10 @@
                                         <input ng-model="product.name">
                                     </md-input-container>
                                     <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Unit</label>
+                                        <input ng-model="product.unit">
+                                    </md-input-container>
+                                    <!-- <md-input-container class="md-block" flex-gt-sm>
                                         <label>Quantity</label>
                                         <input ng-model="product.quantity" type="number">
                                     </md-input-container>
@@ -113,9 +117,9 @@
 									<md-input-container class="md-block" flex-gt-sm>
                                         <label>Sq. Breadth</label>
                                         <input ng-model="product.sqb" type="number">
-                                    </md-input-container>
+                                    </md-input-container> -->
                                     <md-input-container class="md-block" flex-gt-sm>
-                                        <label>Rate</label>
+                                        <label>Price</label>
                                         <input ng-model="product.rate" type="number">
                                     </md-input-container>
                                 </div>
@@ -133,17 +137,20 @@
                                             Name
                                         </td>
                                         <td>
+                                            Unit
+                                        </td>
+                                        <!-- <td>
                                             Qty.
                                         </td>
                                         <td>
                                             Sq.
-                                        </td>
+                                        </td> -->
 					                    <td>
-					                        Rate
+					                        Price
 					                    </td>
-                                        <td>
+                                        <!-- <td>
                                             Amount
-                                        </td>
+                                        </td> -->
                                         <td>
                                             Remove
                                         </td>
@@ -153,10 +160,11 @@
                                     <tr ng-repeat="item in products track by $index">
                                         <td>{{item.no}}</td>
                                         <td>{{item.name}}</td>
-                                        <td>{{item.quantity}}</td>
-										<td>{{item.sql}} * {{item.sqb}}</td>
+                                        <td>{{item.unit}}</td>
+                                        <!-- <td>{{item.quantity}}</td>
+										<td>{{item.sql}} * {{item.sqb}}</td> -->
                                         <td>{{item.rate}}</td>
-                                        <td>{{item.total.toFixed(2)}}</td>
+                                        <!-- <td>{{item.total.toFixed(2)}}</td> -->
                                         <td>
                                             <md-button class="md-warn" ng-click="deleteProduct($index);">Remove</md-button>
                                         </td>
@@ -262,6 +270,7 @@
                 $scope.productMaster = {
                     no: 1,
                     name: "",
+                    unit:"Sq.Ft.",
                     quantity: 1,
 					sql:1,
 					sqb:1,
@@ -404,7 +413,11 @@
 							tsqStr='---';
 						}
 						
-						formatString += "[" + $scope.products[i].no + ",'" + $scope.products[i].name + "'," + $scope.products[i].quantity + ",'" + sqStr + "','" + tsqStr + "','" + $scope.formatNumber($scope.products[i].rate) +"', '" + $scope.formatNumberGT($scope.products[i].total) + "']" + (i == $scope.products.length-1 ? "" : "$$$");
+						//formatString += "[" + $scope.products[i].no + ",'" + $scope.products[i].name + "'," + $scope.products[i].quantity + ",'" + sqStr + "','" + tsqStr + "','" + $scope.formatNumber($scope.products[i].rate) +"', '" + $scope.formatNumberGT($scope.products[i].total) + "']" + (i == $scope.products.length-1 ? "" : "$$$");
+                        //left,top,right, boottom
+                        //{ text:'',	border: [false, true, false, true]}
+
+                        formatString += "[" + $scope.products[i].no + ",{ text:'" + $scope.products[i].name + "',	border: [true, true, false, true]},{ text:'',	border: [false, true, false, true]},{ text:'',	border: [false, true, false, true]},{ text:'',	border: [false, true, false, true]},'" + $scope.products[i].unit + "', '" + $scope.formatNumberGT($scope.products[i].rate) + "']" + (i == $scope.products.length-1 ? "" : "$$$");
                     }
                     
                     return formatString;
@@ -522,35 +535,38 @@
                                 table: {
 									//widths: [15, 200, 45, 55, 80, 80],
                                     //widths: [20, 189, 30, 49, 48, 53, 74],
-									widths: [18, 210, 25, 43, 46, 48, 74],
-                                    heights: 13,
+									//widths: [18, 210, 25, 43, 46, 48, 74],
+                                    widths: [20, 292, 8, 8, 8, 48, 74],
+                                    heights: 15,
                                     headerRows: 0,
                                     // keepWithHeaderRows: 1,
                                     body: [
                                         [
 											{
-												text: $scope.user.sellerGSTIN ? 'PAN : ' + $scope.user.sellerGSTIN : '', 
+												text: $scope.user.billType,//$scope.user.sellerGSTIN ? 'PAN : ' + $scope.user.sellerGSTIN : '', 
 												bold: true,
                                                 fontSize: 12,
 												color: 'blue',
-                                                colSpan: 2,
+                                                colSpan: 4,
 												alignment:'left',
 												border: [true, true, false, false],//left,top,right, boottom
                                             },
+                                            //'',
+											// {
+											// 	text: $scope.user.billType, 
+											// 	bold: true,
+                                            //     fontSize: 12,
+											// 	color: 'blue',
+                                            //     //colSpan: 3,
+											// 	alignment:'right',
+											// 	border: [false, true, false, false],//left,top,right, boottom
+                                            // },
                                             '',
-											{
-												text: $scope.user.billType, 
-												bold: true,
-                                                fontSize: 12,
-												color: 'blue',
-                                                colSpan: 2,
-												alignment:'left',
-												border: [false, true, false, false],//left,top,right, boottom
-                                            },
+                                            '',
                                             '',
 											{
 												text:'',
-												border: [false, true, false, false]
+												border: [false, true, false, false]//left,top,right, boottom
 											},
                                             {
 												text: $scope.user.sellerMobile ? 'M.' + $scope.user.sellerMobile : '',
@@ -639,12 +655,15 @@
                                         ],
                                         [
 											{text:'No.', bold:true},
-											{text:'Description', bold:true},
-											{text:'Qty.', bold:true},
-											{text:'Sq.ft.', bold:true},//Rate
-											{text:'T.Sq.ft', bold:true},//Basic Amount
-											{text:'Rate', bold:true},
-											{text:'Amount', bold:true}
+											{text:'Description', bold:true, colSpan: 4},
+                                            '',
+											'',
+                                            '',
+											// {text:'Qty.', bold:true},
+											// {text:'Sq.ft.', bold:true},//Rate
+											// {text:'T.Sq.ft', bold:true},//Basic Amount
+											{text:'Unit', bold:true},
+											{text:'Price', bold:true}
                                         ],
                                         //eval("['1','Test Desc','1','₹ 60,000','','₹ 60,000']"),
                                         //$scope.getFormattedProducts(),
@@ -749,7 +768,7 @@
                                 margin: [0, 5, 0, 5],
                                 heights: 700,
                                 //width: 585,
-                                fontSize : 11
+                                fontSize : 12
                             },
                             tableHeader: {
                                 bold: true,
@@ -758,7 +777,7 @@
                             }
                         },
                         defaultStyle: {
-                            // alignment: 'justify'
+                            //alignment: 'justify'
                         }
 
                     };
