@@ -1,0 +1,1186 @@
+﻿<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Angular Material style sheet -->
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+    <!--<link rel="stylesheet" href="https://raw.githubusercontent.com/vishalgajjar23/GMM/master/angular-material.min.css">-->
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        /*tr:nth-child(even) {
+            background-color: #dddddd;
+        }*/
+    </style>
+</head>
+<body ng-app="InvoiceApp" ng-cloak>
+
+
+    <div ng-cloak ng-controller="InvoiceControl">
+        <md-content>
+            <md-tabs md-dynamic-height md-border-bottom md-selected="selectedIndex">
+                <md-tab label="Seller">
+                    <md-content layout-padding>
+                        <div>
+                            <!--<h2>Generate GST Invoice</h2>-->
+							
+                            <form name="userForm">
+								<div layout-gt-sm="row">
+								<label class="md-block" flex-gt-sm>Bill Type </label>
+								<br/><br/>
+								
+								<md-radio-group ng-model="user.billType" class="md-block" flex-gt-sm>
+								  <md-radio-button value="Labour Bill" class="md-primary">Labour Bill</md-radio-button>
+								  <md-radio-button value="Estimate"> Estimate </md-radio-button>								 
+								</md-radio-group>
+								
+								 <md-input-container class="md-block" flex-gt-sm> 
+                                        <label>Seller name</label> 
+                                        <input ng-model="user.sellerName"> 
+                                 </md-input-container>
+								 <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Seller PAN</label>
+                                        <input ng-model="user.sellerGSTIN">
+                                    </md-input-container>
+									<md-input-container class="md-block" flex-gt-sm>
+                                        <label>Seller Mobile No.</label>
+                                        <input ng-model="user.sellerMobile">
+                                    </md-input-container>
+								</div>
+								
+                                <!-- <div layout-gt-sm="row"> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Seller Name</label> -->
+                                        <!-- <input ng-model="user.sellerName"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Seller Address</label> -->
+                                        <!-- <input ng-model="user.sellerAddressLine1"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Seller Address Line 2</label> -->
+                                        <!-- <input ng-model="user.sellerAddressLine2"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Seller Address Line 3</label> -->
+                                        <!-- <input ng-model="user.sellerAddressLine3"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Seller PAN</label> -->
+                                        <!-- <input ng-model="user.sellerGSTIN"> -->
+                                    <!-- </md-input-container> -->
+                                <!-- </div> -->
+
+                                <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                                    <!-- <md-button class="md-raised" ng-click="reset()">Reset</md-button> -->
+									
+                                    <!--<md-button class="md-raised md-primary" ng-click="submit(user)">Submit</md-button>-->
+                                    <md-button class="md-raised md-primary" ng-click="secondTab()">Next</md-button>
+									<!-- <md-button class="md-raised md-primary" ng-click="saveStuff()">Save Above Details</md-button> -->
+                                </section>
+								<!-- <label style='color:red'>Note : Once above seller details are added first time, it is saved in local storage, so you dont need to add these details again and again. Last details are always saved.</label> -->
+                            </form>
+
+                            <!--<pre>user = {{user | json}}</pre>
+                            <pre>products = {{products | json}}</pre>-->
+
+                        </div>
+                    </md-content>
+                </md-tab>
+				
+				<md-tab label="Bill">
+                    <md-content layout-padding>
+                        <div>
+                            <!--<h2>Generate GST Invoice</h2>-->
+							
+                            <form name="userForm">
+								<div layout-gt-sm="row">
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Buyer Name</label>
+                                        <input ng-model="user.buyerName">
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Buyer Address Line</label>
+                                        <input ng-model="user.buyerAddressLine1">
+                                    </md-input-container>
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Buyer Address Line2</label> -->
+                                        <!-- <input ng-model="user.buyerAddressLine2"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Buyer Address Line3</label> -->
+                                        <!-- <input ng-model="user.buyerAddressLine3"> -->
+                                    <!-- </md-input-container> -->
+									<!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Buyer GSTIN</label> -->
+                                        <!-- <input ng-model="user.buyerGSTIN"> -->
+                                    <!-- </md-input-container> -->
+                                    
+                                </div>
+
+                                <div layout-gt-sm="row">
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Bill No</label>
+                                        <input ng-model="user.invoiceNo">
+                                    </md-input-container>
+                                    <div flex-gt-xm>
+                                        <label>Bill Date</label>
+                                        <md-datepicker ng-model="user.invoiceDate" md-placeholder="Select date"></md-datepicker>
+                                    </div>
+								</div>
+								
+								<!-- <div layout-gt-sm="row"> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Delivery Note</label> -->
+                                        <!-- <input ng-model="user.deliveryNote"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Mode/Terms of Payment</label> -->
+                                        <!-- <input ng-model="user.modeTermsOfPayment"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Supplier's Ref.</label> -->
+                                        <!-- <input ng-model="user.suppliersRef"> -->
+                                    <!-- </md-input-container> -->
+								<!-- </div> -->
+								
+								<!-- <div layout-gt-sm="row"> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Other Reference(s)</label> -->
+                                        <!-- <input ng-model="user.otherRef"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Buyer's Order No.</label> -->
+                                        <!-- <input ng-model="user.buyersOrderNo"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <div flex-gt-xm> -->
+                                        <!-- <label>Buyer's Order No. dated</label> -->
+                                        <!-- <md-datepicker ng-model="user.buyersOrderNoDated" md-placeholder="Select date"></md-datepicker> -->
+                                    <!-- </div> -->
+								<!-- </div> -->
+								
+								<!-- <div layout-gt-sm="row"> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Dispatch Document No.</label> -->
+                                        <!-- <input ng-model="user.dispatchDocNo"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <div flex-gt-xm> -->
+                                        <!-- <label>Dispatch Document No. dated</label> -->
+                                        <!-- <md-datepicker ng-model="user.dispatchDocNoDated" md-placeholder="Select date"></md-datepicker> -->
+                                    <!-- </div> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Dispatched through</label> -->
+                                        <!-- <input ng-model="user.dispatchedThrough"> -->
+                                    <!-- </md-input-container> -->
+								<!-- </div> -->
+								
+								<!-- <div layout-gt-sm="row"> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Destination</label> -->
+                                        <!-- <input ng-model="user.destination"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>Terms of Delivery</label> -->
+                                        <!-- <input ng-model="user.termsOfDelivery"> -->
+                                    <!-- </md-input-container> -->
+                                <!-- </div> -->
+
+                                <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                                    <!-- <md-button class="md-raised" ng-click="reset()">Reset</md-button> -->
+									<md-button class="md-raised" ng-click="firstTab()">Previous</md-button>
+                                    <!--<md-button class="md-raised md-primary" ng-click="submit(user)">Submit</md-button>-->
+                                    <md-button class="md-raised md-primary" ng-click="thirdTab()">Next</md-button>
+									<!-- <md-button class="md-raised md-primary" ng-click="saveStuff()">Save Above Details</md-button> -->
+                                </section>								
+                            </form>
+
+                            <!--<pre>user = {{user | json}}</pre>
+                            <pre>products = {{products | json}}</pre>-->
+
+                        </div>
+                    </md-content>
+                </md-tab>
+				
+                <md-tab label="Products">
+                    <md-content layout-padding>
+                        <div>
+                            <form name="userForm">
+                                <div layout-gt-sm="row">
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Serial No.</label>
+                                        <input ng-model="product.no" type="number">
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Description of Goods</label>
+                                        <input ng-model="product.name">
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Quantity</label>
+                                        <input ng-model="product.quantity" type="number">
+                                    </md-input-container>
+									<md-input-container class="md-block" flex-gt-sm>
+                                        <label>Sq. Length</label>
+                                        <input ng-model="product.sql" type="number">
+                                    </md-input-container>
+									<md-input-container class="md-block" flex-gt-sm>
+                                        <label>Sq. Breadth</label>
+                                        <input ng-model="product.sqb" type="number">
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Rate</label>
+                                        <input ng-model="product.rate" type="number">
+                                    </md-input-container>
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>SGST %</label> -->
+                                        <!-- <input ng-model="product.sgstPer" type="number"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>CGST %</label> -->
+                                        <!-- <input ng-model="product.cgstPer" type="number"> -->
+                                    <!-- </md-input-container> -->
+                                    <!-- <md-input-container class="md-block" flex-gt-sm> -->
+                                        <!-- <label>IGST %</label> -->
+                                        <!-- <input ng-model="product.igstPer" type="number"> -->
+                                    <!-- </md-input-container> -->
+                                </div>
+                            </form>
+
+                            <md-button class="md-raised md-primary" ng-click="addProduct()">Add Product</md-button>
+
+                            <table style="border:1px solid black;" ng-if="products.length>0">
+                                <thead>
+                                    <tr>
+                                        <td>
+                                            Sr No.
+                                        </td>
+                                        <td>
+                                            Name
+                                        </td>
+                                        <td>
+                                            Qty.
+                                        </td>
+                                        <td>
+                                            Sq.
+                                        </td>
+					                    <td>
+					                        Rate
+					                    </td>
+                                        <!-- <td> -->
+                                            <!-- SGST % -->
+                                        <!-- </td> -->
+                                        <!-- <td> -->
+                                            <!-- CGST % -->
+                                        <!-- </td> -->
+                                        <!-- <td> -->
+                                            <!-- IGST % -->
+                                        <!-- </td> -->
+                                        <td>
+                                            Amount
+                                        </td>
+                                        <td>
+                                            Remove
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in products track by $index">
+                                        <td>{{item.no}}</td>
+                                        <td>{{item.name}}</td>
+                                        <td>{{item.quantity}}</td>
+										<td>{{item.sql}} * {{item.sqb}}</td>
+                                        <td>{{item.rate}}</td>
+					                    
+                                        <!-- <td>{{item.sgstPer}}</td> -->
+                                        <!-- <td>{{item.cgstPer}}</td> -->
+                                        <!-- <td>{{item.igstPer}}</td> -->
+                                        <td>{{item.total.toFixed(2)}}</td>
+                                        <td>
+                                            <md-button class="md-warn" ng-click="deleteProduct($index);">Remove</md-button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                                <md-button class="md-raised" ng-click="secondTab()">Previous</md-button>
+                                <md-button class="md-raised md-primary" ng-click="fourthTab()">Next</md-button>
+                            </section>
+                        </div>
+                    </md-content>
+                </md-tab>
+                <md-tab label="PDF">
+                    <md-content layout-padding>
+                        <div>
+                            <!--<h2>Preview PDF</h2>-->
+
+                            <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                                <md-button class="md-raised" ng-click="thirdTab()">Previous</md-button>
+                                <md-button class="md-raised md-primary" ng-click="generatePDF()">Generate PDF</md-button>
+                            </section>
+                        </div>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-content>
+    </div>
+
+    <!-- Angular Material requires Angular.js Libraries -->
+     <!-- <script src="https://raw.githubusercontent.com/vishalgajjar23/GMM/master/angular.min.js"></script>
+    <script src="https://raw.githubusercontent.com/vishalgajjar23/GMM/master/angular-animate.min.js"></script>
+    <script src="https://raw.githubusercontent.com/vishalgajjar23/GMM/master/angular-aria.min.js"></script>
+    <script src="https://raw.githubusercontent.com/vishalgajjar23/GMM/master/angular-messages.min.js"></script>
+	
+    <script src="https://raw.githubusercontent.com/vishalgajjar23/GMM/master/angular-material.min.js"></script>
+    <script src="https://raw.githubusercontent.com/vishalgajjar23/GMM/master/moment.js"></script>
+    <script src="https://raw.githubusercontent.com/vishalgajjar23/GMM/master/pdfmake.min.js"></script>
+    <script src="https://raw.githubusercontent.com/vishalgajjar23/GMM/master/vfs_fonts.js"></script>-->
+	
+	 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-messages.min.js"></script>
+    <!-- Angular Material Library -->
+     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.37/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.37/vfs_fonts.js"></script>
+
+    <!-- Your application bootstrap  -->
+    <script type="text/javascript">
+        angular
+            .module('InvoiceApp', ['ngMaterial', 'ngMessages'])
+            .controller('InvoiceControl', function ($scope) {
+				
+				$scope.saveInitialFakeData = function () {
+                    localStorage.sellerName= 'GAURANG M. MISTRI';//'DHVANIT ENTERPRISE',
+                    localStorage.sellerAddressLine1= 'DEF';//'B9, Ambika Tenament,',
+                    localStorage.sellerAddressLine2= 'GHI';//'Near New Jaspark Society,',
+                    localStorage.sellerAddressLine3= 'JKL';//'Isanpur, Ahmedabad -380008,',
+                    localStorage.sellerGSTIN= '123QWE';//'24AKSPM8985A1ZO',
+					localStorage.sellerMobile = '98989898XX';//'24AKSPM8985A1ZO',
+					
+                    //TODO remove values
+                    localStorage.buyerName= 'XYZ';//'BIRD INK',
+                    localStorage.buyerAddressLine1= 'MNO';//'Narol,',
+                    localStorage.buyerAddressLine2= 'PQR';//'Ahmedabad',
+                    localStorage.buyerAddressLine3= '123456';//'380008',
+					localStorage.buyerGSTIN= 'ABC123';//,
+
+                    //Invioce details
+                    //localStorage.invoiceNo='GST/002/18-19';
+                };
+				
+				$scope.saveInitialFakeData();
+				
+                $scope.userMasterData = {
+                    sellerName: localStorage.sellerName,//'DHVANIT ENTERPRISE',
+                    sellerAddressLine1: localStorage.sellerAddressLine1,//'B9, Ambika Tenament,',
+                    sellerAddressLine2: localStorage.sellerAddressLine2,//'Near New Jaspark Society,',
+                    sellerAddressLine3: localStorage.sellerAddressLine3,//'Isanpur, Ahmedabad -380008,',
+                    sellerGSTIN: localStorage.sellerGSTIN,//'24AKSPM8985A1ZO',
+					sellerMobile: localStorage.sellerMobile,//'24AKSPM8985A1ZO',
+					
+                    buyerName: '',//localStorage.buyerName,//
+                    buyerAddressLine1: '',//localStorage.buyerAddressLine1,
+                    buyerAddressLine2: 'Ahmedabad',//localStorage.buyerAddressLine2,
+                    buyerAddressLine3: '380008',//localStorage.buyerAddressLine3,//
+					buyerGSTIN : 'ABCDEF',//localStorage.buyerGSTIN,//
+
+                    //Invioce details
+                    invoiceNo: localStorage.invoiceNo,//'GST/002/18-19',
+                    invoiceDate: new Date(),
+                    deliveryNote: '',
+                    modeTermsOfPayment: '',
+                    suppliersRef: '',
+                    otherRef: '',
+                    buyersOrderNo: '',
+                    buyersOrderNoDated: '',
+                    dispatchDocNo: '',
+                    dispatchDocNoDated: '',
+                    dispatchedThrough: '',
+                    destination: '',
+                    termsOfDelivery: '',
+					
+					//Bill Type
+					billType : 'Labour Bill'
+                };
+				
+				
+				
+                $scope.user = angular.copy($scope.userMasterData);
+
+
+                $scope.productMaster = {
+                    no: 1,
+                    name: "",
+                    quantity: 1,
+					sql:1,
+					sqb:1,
+                    rate: 0,
+		            //basicAmt : 0,
+                    //sgstPer: 0,
+                    //cgstPer: 0,
+                    //igstPer : 0,
+
+                    rateQuantity: 0,
+                    total: 0,
+                };
+                $scope.resetProduct = function () {
+                    $scope.product = angular.copy($scope.productMaster);
+                };
+                $scope.resetProduct();
+                $scope.clearAllProducts = function () {
+                    if ($scope.products) {
+                        $scope.products.splice(0, $scope.products.length);
+                    }
+                    else {
+                        $scope.products = [];
+                    }
+                }
+
+                $scope.reset = function () {
+                    $scope.user = angular.copy($scope.userMasterData);
+                    $scope.clearAllProducts();
+                    $scope.resetProduct();
+                };
+
+                $scope.firstTab = function () {
+                    $scope.selectedIndex = 0;
+                };
+
+                $scope.secondTab = function () {
+                    $scope.selectedIndex = 1;
+					$scope.saveRealData();
+                };
+
+                $scope.thirdTab = function () {
+                    $scope.selectedIndex = 2;
+					
+					//TODO remove values
+                    localStorage.buyerName= $scope.user.buyerName;//'XYZ';//'BIRD INK',
+                    localStorage.buyerAddressLine1= $scope.user.buyerAddressLine1;//'MNO';//'Narol,',
+                    localStorage.buyerAddressLine2= $scope.user.buyerAddressLine2;//'PQR';//'Ahmedabad',
+                    localStorage.buyerAddressLine3= $scope.user.buyerAddressLine3;//'123456';//'380008',
+					localStorage.buyerGSTIN= $scope.user.buyerGSTIN;//'ABC123';//,
+					
+					//Invioce details
+                    localStorage.invoiceNo= $scope.user.invoiceNo;//'GST/002/18-19';
+                };
+				
+				$scope.fourthTab = function () {
+				
+					if($scope.products.length == 0){
+						alert('Please add at least one product before going to generate PDF page');
+						return false;
+					}
+                    $scope.selectedIndex = 3;
+                };
+				
+				$scope.saveRealData = function () {
+                    localStorage.sellerName= $scope.user.sellerName;//'ABC';//'DHVANIT ENTERPRISE',
+                    localStorage.sellerAddressLine1= $scope.user.sellerAddressLine1;//'DEF';//'B9, Ambika Tenament,',
+                    localStorage.sellerAddressLine2= $scope.user.sellerAddressLine2;//'GHI';//'Near New Jaspark Society,',
+                    localStorage.sellerAddressLine3= $scope.user.sellerAddressLine3;//'JKL';//'Isanpur, Ahmedabad -380008,',
+                    localStorage.sellerGSTIN= $scope.user.sellerGSTIN;//'123QWE';//'24AKSPM8985A1ZO',
+                    localStorage.sellerMobile = $scope.user.sellerMobile;//'123QWE';//'24AKSPM8985A1ZO',                    
+                };
+
+                $scope.formatNumber = function (num) {
+                    num = num.toFixed(2);
+                    var n1, n2;
+                    num = num + '' || '';
+                    // works for integer and floating as well
+                    n1 = num.split('.');
+                    n2 = n1[1] || null;
+                    n1 = n1[0].replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+                    num = n2 ? n1 + '.' + n2 : n1;
+                    //return '₹ ' + num;
+                    return num;
+                };
+				
+				$scope.formatNumberNF = function (num, isFixed) {
+                    //num = num.toFixed(2);
+                    var n1, n2;
+                    num = num + '' || '';
+                    // works for integer and floating as well
+                    n1 = num.split('.');
+                    n2 = n1[1] || null;
+                    n1 = n1[0].replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+                    num = n2 ? n1 + '.' + n2 : n1;
+                    //return '₹ ' + num;
+                    return num;
+                };
+
+                $scope.formatNumberGT = function (num, isFixed) {
+                    num = num.toFixed(2);
+                    var n1, n2;
+                    num = num + '' || '';
+                    // works for integer and floating as well
+                    n1 = num.split('.');
+                    n2 = n1[1] || null;
+                    n1 = n1[0].replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+                    num = n2 ? n1 + '.' + n2 : n1;
+                    return '₹ ' + num;
+                };
+
+                $scope.formatDate = function (date) {
+                    if (date) {
+                        return moment(date).format('DD/MM/YYYY');
+                    }
+                    else {
+                        return "";
+                    }
+                }
+
+                $scope.getGrandTotal = function () {
+                    var grandTotal = 0;
+                    for (var i = 0; i < $scope.products.length; i++) {
+                        grandTotal += $scope.products[i].total;
+                    }
+                    return grandTotal;
+                };
+
+                $scope.getFormattedProducts = function () {
+                    //eval("['1','Test Desc','1','₹ 60,000','','₹ 60,000']");
+                    var formatString = "";
+                    for (var i = 0; i < $scope.products.length; i++) {
+						//var igstStr = " ; IGST " + $scope.products[i].igstPer + "% = " + $scope.formatNumber(($scope.products[i].igstPer / 100) * $scope.products[i].rateQuantity * $scope.products[i].sql * $scope.products[i].sqb);
+						<!-- var cgstStr = "; C " + $scope.products[i].cgstPer + "%= " + $scope.formatNumber(($scope.products[i].cgstPer / 100) * $scope.products[i].rateQuantity); -->
+						<!-- var sgstStr = "S " + $scope.products[i].sgstPer + "%= " + $scope.formatNumber(($scope.products[i].sgstPer / 100) * $scope.products[i].rateQuantity); -->
+						
+						//var taxStr= sgstStr + cgstStr;// + igstStr;
+						
+						//if($scope.products[i].cgstPer==0 && $scope.products[i].sgstPer==0)//$scope.products[i].igstPer==0 && 
+						//var	taxStr = "---";
+						
+						var sqStr = $scope.formatNumberNF($scope.products[i].sql) +"*"+ $scope.formatNumberNF($scope.products[i].sqb);
+						var tsqStr = $scope.formatNumberNF($scope.products[i].sql*$scope.products[i].sqb);
+						if(!$scope.products[i].sql && !$scope.products[i].sqb){
+							sqStr='---';
+							tsqStr='---';
+						}
+						
+						formatString += "[" + $scope.products[i].no + ",'" + $scope.products[i].name + "'," + $scope.products[i].quantity + ",'" + sqStr + "','" + tsqStr + "','" + $scope.formatNumber($scope.products[i].rate) +"', '" + $scope.formatNumberGT($scope.products[i].total) + "']" + (i == $scope.products.length-1 ? "" : "$$$");
+                    }
+                    
+                    return formatString;
+                };
+				
+				function number2text(value) {
+					var fraction = Math.round(frac(value)*100);
+					var f_text  = "";
+
+					if(fraction > 0) {
+						f_text = "And "+convert_number(fraction)+" Paise";
+					}
+
+					return convert_number(value)+" Rupee "+f_text+" Only";
+				}
+
+				function frac(f) {
+					return f % 1;
+				}
+
+				function convert_number(number)
+				{
+					if ((number < 0) || (number > 999999999)) 
+					{ 
+						return "NUMBER OUT OF RANGE!";
+					}
+					var Gn = Math.floor(number / 10000000);  /* Crore */ 
+					number -= Gn * 10000000; 
+					var kn = Math.floor(number / 100000);     /* lakhs */ 
+					number -= kn * 100000; 
+					var Hn = Math.floor(number / 1000);      /* thousand */ 
+					number -= Hn * 1000; 
+					var Dn = Math.floor(number / 100);       /* Tens (deca) */ 
+					number = number % 100;               /* Ones */ 
+					var tn= Math.floor(number / 10); 
+					var one=Math.floor(number % 10); 
+					var res = ""; 
+
+					if (Gn>0) 
+					{ 
+						res += (convert_number(Gn) + " Crore"); 
+					} 
+					if (kn>0) 
+					{ 
+							res += (((res=="") ? "" : " ") + 
+							convert_number(kn) + " Lakh"); 
+					} 
+					if (Hn>0) 
+					{ 
+						res += (((res=="") ? "" : " ") +
+							convert_number(Hn) + " Thousand"); 
+					} 
+
+					if (Dn) 
+					{ 
+						res += (((res=="") ? "" : " ") + 
+							convert_number(Dn) + " Hundred"); 
+					} 
+
+
+					var ones = Array("", "One", "Two", "Three", "Four", "Five", "Six","Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen","Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen","Nineteen"); 
+				var tens = Array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty","Seventy", "Eighty", "Ninety"); 
+
+					if (tn>0 || one>0) 
+					{ 
+						if (!(res=="")) 
+						{ 
+							res += " And "; 
+						} 
+						if (tn < 2) 
+						{ 
+							res += ones[tn * 10 + one]; 
+						} 
+						else 
+						{ 
+
+							res += tens[tn];
+							if (one>0) 
+							{ 
+								res += ("-" + ones[one]); 
+							} 
+						} 
+					}
+
+					if (res=="")
+					{ 
+						res = "zero"; 
+					} 
+					return res;
+				}
+
+                $scope.generatePDF = function () {
+					if($scope.products.length == 0){
+						alert('Please add at least one product to generate PDF');
+						return false;
+					}
+                    // playground requires you to assign document definition to a variable called dd
+                    var arayObj = $scope.getFormattedProducts();
+                    var test = arayObj.split('$$$');
+                    var test1 =[];
+                    for (var i = 0; i < test.length; i++) {
+                        test1.push(eval(test[i]));
+                    }
+                    //var test3 = test1[0] + ',' + test1[1]
+                    //debugger;
+                    var dd = {
+                        content: [
+                            <!-- {  -->
+								<!-- text: $scope.user.billType,  -->
+								<!-- style: 'subheader'  -->
+							<!-- }, -->
+                            {
+                                style: 'tableExample',
+                                color: 'black',
+                                table: {
+									//widths: [15, 200, 45, 55, 80, 80],
+                                    //widths: [20, 189, 30, 49, 48, 53, 74],
+									widths: [18, 210, 25, 43, 46, 48, 74],
+                                    heights: 13,
+                                    headerRows: 0,
+                                    // keepWithHeaderRows: 1,
+                                    body: [
+                                        <!-- [ -->
+                                            <!-- { -->
+                                                <!-- bold: true, -->
+                                                <!-- fontSize: 13, -->
+                                                <!-- text: $scope.user.sellerName + '\n' + $scope.user.sellerAddressLine1 + '\n' + $scope.user.sellerAddressLine2 + '\n' + $scope.user.sellerAddressLine3 + '\nGSTIN : ' + $scope.user.sellerGSTIN, -->
+                                                <!-- colSpan: 2, -->
+                                                <!-- rowSpan: 3 -->
+                                            <!-- }, -->
+                                            <!-- '', -->
+                                            <!-- { -->
+                                                <!-- colSpan: 3, -->
+                                                <!-- text: 'Invoice No.\n' + $scope.user.invoiceNo -->
+                                            <!-- }, -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- { -->
+                                                <!-- colSpan: 2, -->
+                                                <!-- text: 'Dated\n' + $scope.formatDate($scope.user.invoiceDate) -->
+                                            <!-- }, -->
+                                            <!-- '' -->
+                                        <!-- ], -->
+                                        <!-- [ -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- { -->
+                                                <!-- colSpan: 3, -->
+                                                <!-- text: 'Delivery Note\n' + $scope.user.deliveryNote -->
+                                            <!-- }, -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- { -->
+                                                <!-- colSpan: 2, -->
+                                                <!-- text: 'Mode/Terms of Payment\n' + $scope.user.modeTermsOfPayment -->
+                                            <!-- }, -->
+                                            <!-- '' -->
+                                        <!-- ], -->
+                                        <!-- [ -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- { -->
+                                                <!-- colSpan: 3, -->
+                                                <!-- text: "Supplier's Ref.\n" + $scope.user.suppliersRef -->
+                                            <!-- }, -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- { -->
+                                                <!-- colSpan: 2, -->
+                                                <!-- text: 'Other Reference(s)\n' + $scope.user.otherRef -->
+                                            <!-- }, -->
+                                            <!-- '' -->
+                                        <!-- ], -->
+										<!-- [ -->
+											<!-- '', -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+											<!-- '', -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- { -->
+                                                <!-- //bold: true, -->
+                                                <!-- fontSize: 13, -->
+												<!-- color: 'blue', -->
+                                                <!-- text: '9913511071',//☎ $scope.user.sellerName + '\n', -->
+                                                <!-- colSpan: 7, -->
+												<!-- alignment:'right', -->
+                                                <!-- //rowSpan: 4s -->
+                                            <!-- } -->
+                                        <!-- ], -->
+										[
+											{
+												text: $scope.user.sellerGSTIN ? 'PAN : ' + $scope.user.sellerGSTIN : '', 
+												bold: true,
+                                                fontSize: 12,
+												color: 'blue',
+                                                colSpan: 2,
+												alignment:'left',
+												border: [true, true, false, false],//left,top,right, boottom
+                                            },
+                                            '',
+											{
+												text: $scope.user.billType, 
+												bold: true,
+                                                fontSize: 12,
+												color: 'blue',
+                                                colSpan: 2,
+												alignment:'left',
+												border: [false, true, false, false],//left,top,right, boottom
+                                            },
+                                            '',
+											{
+												text:'',
+												border: [false, true, false, false]
+											},
+                                            {
+												text: $scope.user.sellerMobile ? 'M.' + $scope.user.sellerMobile : '',
+												bold: true,
+                                                fontSize: 12,
+												color: 'blue',
+												colSpan: 2,
+                                                alignment:'right',
+												border: [false, true, true, false],//left,top,right, boottom
+                                            },
+											''
+                                        ],
+										[
+                                            {
+                                                bold: true,
+                                                fontSize: 25,
+												color: 'blue',
+                                                text: $scope.user.sellerName,
+                                                colSpan: 7,
+												alignment:'center',
+												border: [true, false, true, false],//left,top,right, boottom
+                                                //rowSpan: 4
+                                            },
+                                            '',
+                                            '',
+                                            '',
+											'',
+                                            '',
+                                            ''
+                                        ],
+										[
+                                            {
+                                                bold: true,
+                                                fontSize: 11,
+												color: 'blue',
+                                                text: 'ALL KINDS OF WOODEN FURNITURE, ALUMINIUM WINDOW & PROFILE SHUTTER.',//$scope.user.sellerName + '\n',
+                                                colSpan: 7,
+												alignment:'center',
+												border: [true, false, true, true],//left,top,right, boottom
+                                                //rowSpan: 4
+                                            },
+                                            '',
+                                            '',
+                                            '',
+											'',
+                                            '',
+                                            ''
+                                        ],
+										[
+                                            {
+                                                //bold: true,
+                                                fontSize: 11,
+												color: 'blue',
+                                                text: 'SHED-C12, Devashray Industrial Park, Opp Suraj Auto, Nr Under Bridge, B/H GIDC Ph4, Vatva, Ahmedabad',//$scope.user.sellerName + '\n',
+                                                colSpan: 7,
+												alignment:'center',
+												lineHeight:0.5,
+                                                //rowSpan: 4
+                                            },
+                                            '',
+                                            '',
+                                            '',
+											'',
+                                            '',
+                                            ''
+                                        ],
+										[
+                                            {
+                                                //bold: true,
+                                                //fontSize: 11,
+                                                text: '  Name: ' + $scope.user.buyerName + '\nAddress: ' + $scope.user.buyerAddressLine1,// + 
+                                                    //'\n' + $scope.user.buyerAddressLine2 +
+                                                    //'\n' + $scope.user.buyerAddressLine3,
+                                                colSpan: 5,
+                                                rowSpan: 1
+                                            },
+                                            '',
+											'',
+                                            <!-- { -->
+                                                <!-- colSpan: 3, -->
+                                                <!-- text: "Buyer's Order No.\n" + $scope.user.buyersOrderNo -->
+                                            <!-- }, -->
+                                            '',
+                                            '',
+                                            {
+                                                colSpan: 2,
+                                                text: 'Bill No.: ' + $scope.user.invoiceNo +'\nDate: ' + $scope.formatDate($scope.user.invoiceDate)
+                                            },
+                                            ''
+                                        ],
+                                        <!-- [ -->
+                                            <!-- { -->
+                                                <!-- bold: true, -->
+                                                <!-- fontSize: 13, -->
+                                                <!-- text: 'Buyer details:\n' + $scope.user.buyerName + '\n' + $scope.user.buyerAddressLine1 +  -->
+                                                    <!-- '\n' + $scope.user.buyerAddressLine2 + -->
+                                                    <!-- '\n' + $scope.user.buyerAddressLine3, -->
+                                                <!-- colSpan: 2, -->
+                                                <!-- rowSpan: 4 -->
+                                            <!-- }, -->
+                                            <!-- '', -->
+                                            <!-- { -->
+                                                <!-- colSpan: 3, -->
+                                                <!-- text: "Buyer's Order No.\n" + $scope.user.buyersOrderNo -->
+                                            <!-- }, -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- { -->
+                                                <!-- colSpan: 2, -->
+                                                <!-- text: 'Dated\n' + $scope.formatDate($scope.user.buyersOrderNoDated) -->
+                                            <!-- }, -->
+                                            <!-- '' -->
+                                        <!-- ], -->
+                                        <!-- [ -->
+                                            <!-- { -->
+                                                <!-- colSpan: 7, -->
+                                                <!-- text: '', -->
+												<!-- border: [false, false, false, false], -->
+												<!-- lineHeight : 1 -->
+                                            <!-- }, -->
+											<!-- '', -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+											<!-- '', -->
+                                            <!-- '' -->
+                                        <!-- ],[ -->
+                                            <!-- { -->
+                                                <!-- colSpan: 7, -->
+                                                <!-- text: '', -->
+												<!-- border: [false, false, false, false], -->
+												<!-- lineHeight : 1 -->
+                                            <!-- }, -->
+											<!-- '', -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+											<!-- '', -->
+                                            <!-- '' -->
+                                        <!-- ], -->
+										<!-- [ -->
+                                            <!-- { -->
+                                                <!-- colSpan: 7, -->
+                                                <!-- text: '', -->
+												<!-- border: [false, false, false, false], -->
+												<!-- lineHeight : 1 -->
+                                            <!-- }, -->
+											<!-- '', -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+                                            <!-- '', -->
+											<!-- '', -->
+                                            <!-- '' -->
+                                        <!-- ], -->
+                                        [
+											{text:'No.', bold:true},
+											{text:'Particulars', bold:true},
+											{text:'Qty.', bold:true},
+											{text:'Sq.ft.', bold:true},//Rate
+											{text:'T.Sq.ft', bold:true},//Basic Amount
+											{text:'Rate', bold:true},
+											{text:'Amount', bold:true}
+                                        ],
+                                        //eval("['1','Test Desc','1','₹ 60,000','','₹ 60,000']"),
+                                        //$scope.getFormattedProducts(),
+                                        //test3,
+                                        [
+											{ text: "", border: [true, false, false, true] },
+                                            { text: "", border: [false, false, false, true] },
+                                            { text: "", border: [false, false, false, true] },
+                                            { text: "", border: [false, false, false, true] },
+											{ text: "", border: [false, false, false, true] },
+                                            {
+                                                //colSpan: 6,
+                                                text: 'Total',
+												bold: true,
+                                                alignment: 'right',
+												border: [false, true, true, true]
+                                            },
+                                            {
+                                                //colSpan: 1,
+                                                text: $scope.formatNumberGT($scope.getGrandTotal()),
+                                                //alignment: 'right',
+                                                bold: true
+                                            }                                            
+                                        ],
+										<!-- [ -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] } -->
+                                        <!-- ], -->
+										[
+                                            {
+                                                colSpan: 4,
+                                                fontSize: 10,
+												alignment :'justify',
+                                                border: [true, true, false, false],
+                                                text: "Amount chargable (in words) :",
+                                            },
+                                            { text: "", border: [false, true, false, false] },
+                                            { text: "", border: [false, true, false, false] },
+                                            { text: "", border: [false, true, false, false] },
+                                            { text: "", border: [false, true, false, false] },
+                                            { text: "", border: [false, true, false, false] },
+                                            { text: "", border: [false, true, true, false] } ////left,top,right, boottom
+                                        ],
+										[
+                                            {
+                                                colSpan: 7,
+												bold: true,
+                                                fontSize: 12,
+												alignment :'justify',
+                                                border: [true, false, true, false],
+                                                text: number2text($scope.getGrandTotal()),
+                                            },
+                                            { text: "", border: [false, false, false, false] },
+                                            { text: "", border: [false, false, false, false] },
+                                            { text: "", border: [false, false, false, false] },
+                                            { text: "", border: [false, false, false, false] },
+                                            { text: "", border: [false, false, false, false] },
+                                            { text: "", border: [false, false, false, false] } ////left,top,right, boottom
+                                        ],
+                                        <!-- [ -->
+                                            <!-- { -->
+                                                <!-- colSpan: 5, -->
+												<!-- bold: true, -->
+                                                <!-- fontSize: 12, -->
+												<!-- alignment :'justify', -->
+                                                <!-- border: [true, false, false, false], -->
+                                                <!-- text: "\nSeller PAN No. : " + "AQKPM2908H", -->
+                                            <!-- }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, false, false] }, -->
+                                            <!-- { text: "", border: [false, false, true, false] } -->
+                                        <!-- ], -->
+										[
+                                            {
+                                                colSpan: 3,												
+                                                fontSize: 11,
+												alignment :'justify',
+                                                border: [true, false, false, true],
+                                                text: "Declaration:\n1. Labour charges only.\n 2. Subject to Ahmedabad Jurisdiction.\n3. Advance 50% payment is required.",
+                                            },
+                                            { text: "", border: [false, false, false, true] },
+											{ text: "", border: [false, false, false, true] },
+                                            {
+                                                colSpan: 4,
+                                                bold: true,
+                                                alignment: 'right',
+                                                text: "for " + $scope.user.sellerName +"\n\n\nAuthorized Signatury",
+                                                border: [true, true, true, true]
+                                            },
+											{ text: "", border: [false, false, false, false] },
+											{ text: "", border: [false, false, false, false] },
+											{ text: "", border: [false, false, false, false] },
+                                        ]
+                                        <!-- [ -->
+                                            <!-- { -->
+                                                <!-- colSpan: 3, -->
+                                                <!-- text: "", -->
+                                                <!-- border: [true, false, false, true] -->
+                                            <!-- }, -->
+                                            <!-- "", -->
+                                            <!-- "", -->
+                                            <!-- { -->
+                                                <!-- colSpan: 4, -->
+                                                <!-- bold: true, -->
+                                                <!-- alignment: 'right', -->
+                                                <!-- text: "for " + $scope.user.sellerName +"\n\n\nAuthorized Signatury", -->
+                                                <!-- border: [true, true, true, true] -->
+                                            <!-- } -->
+                                        <!-- ] -->
+                                    ]
+                                }
+                            },
+                            { 
+								text: 'This is computer generated ' + $scope.user.billType, 
+								fontSize: 11,
+                                bold: true,
+                                margin: [0, 5, 0, 5],
+                                alignment: 'center'
+							},
+                        ],
+                        styles: {
+                            header: {
+                                fontSize: 18,
+                                bold: true,
+                                margin: [0, 0, 0, 10]
+                            },
+                            subheader: {
+                                fontSize: 14,
+                                bold: true,
+                                margin: [0, 5, 0, 5],
+                                alignment: 'center'
+                            },
+                            tableExample: {
+                                margin: [0, 5, 0, 5],
+                                heights: 700,
+                                //width: 585,
+                                fontSize : 11
+                            },
+                            tableHeader: {
+                                bold: true,
+                                fontSize: 13,
+                                color: 'black'
+                            }
+                        },
+                        defaultStyle: {
+                            // alignment: 'justify'
+                        }
+
+                    };
+
+                    //or become pretty complex(having multi - level tables, images, lists, paragraphs, margins, styles etc...).
+
+                    //As soon as you have the document - definition - object, you're ready to create and open/print/download the PDF:
+
+                    // open the PDF in a new window
+                    //pdfMake.createPdf(docDefinition).open();
+
+                    // print the PDF
+                    //pdfMake.createPdf(docDefinition).print();
+
+                    // download the PDF
+                    //debugger;
+                    var data = dd.content[0].table.body;
+                    //a = [1, 2, 3]
+                    //b = [4, 5, 6]
+
+                    // copy array a
+                    //c = a.slice();
+                    // provide array of arguments using apply method
+                    // and insert elements using splice method
+                    //[].splice.apply(c, [1, 0].concat(b))
+
+                    
+                    var c1 = data.slice();
+
+                    if (test1.length > 0) {
+                        [].splice.apply(c1, [6, 0].concat(test1));
+                    }
+                    dd.content[0].table.body = c1;
+
+                    var date = moment().format('DD-MM-YYYY_HH:MM:SS');
+                    //pdfMake.createPdf(dd).download('Invoice_' + date + '.pdf');
+                    pdfMake.createPdf(dd).download($scope.user.billType + '_' + date + '.pdf', function ()
+                    {
+                        alert($scope.user.billType + ' pdf : ' + $scope.user.billType + '_' + date + '.pdf' +' is downloaded, please check downloads folder!');
+                        window.location.reload();
+                    });
+                    
+                };
+
+                $scope.addProduct = function () {
+                    var product = angular.copy($scope.product);
+					
+					if(product.sql>0 && product.sqb>0)
+						product.rateQuantity = product.quantity * product.rate * product.sql * product.sqb;
+					else
+						product.rateQuantity = product.quantity * product.rate;
+						
+                    product.total = (product.rateQuantity);// + ((product.sgstPer / 100) * product.rateQuantity) + ((product.cgstPer / 100) * product.rateQuantity);// + ((product.igstPer / 100) * product.rateQuantity);
+
+                    $scope.products.push(product);
+
+                    $scope.resetProduct();
+					$scope.product.no = $scope.products.length+1;
+                };
+
+                $scope.deleteProduct = function (index) {
+                    $scope.products.splice(index, 1);
+                };
+
+
+
+                $scope.clearAllProducts();
+                $scope.reset();
+            });
+
+
+        angular.module('InvoiceApp').config(function ($mdDateLocaleProvider) {
+            $mdDateLocaleProvider.formatDate = function (date) {
+                if (date) {
+                    return moment(date).format('DD/MM/YYYY');
+                }
+                else {
+                    return "";
+                }
+            };
+        });
+    </script>
+</body>
+</html>
